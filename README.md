@@ -2,4 +2,6 @@
 
 ![Screenshot](ss.png)
 
-My implementation of the classic game of Tetris game on Python with Pygame. Levels not yet working. Also it needs to be multiple keypresses to move the block, i need a way to make the block move while the user is holding the key. And I need to make full line clear animation. 
+My implementation of the classic game of Tetris on Python with Pygame. It needs to be multiple keypresses to move the block, i need a way to make the block move while the user is holding the key.
+Animation, level, speed, pause and restart added.
+Rotation needs refactoring, it is not working properly for now.
