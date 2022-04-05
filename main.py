@@ -108,6 +108,8 @@ class GameBoard:
             self.board.pop(fullLines[i])
             self.board.insert(0, [0 for _ in range(self.width)])
             self.score += 10
+        if self.score % 500 == 0:
+            self.levelUp()
             
     def removeFullLinesAnimation(self, fullLines, screen: pygame.Surface):
         s = pygame.Surface((18,18))
@@ -196,38 +198,46 @@ class GameBoard:
         self._drawNextBlock(screen)
         self._drawScore(screen)
         self.currentBlock.draw(screen)
+        
+    def levelUp(self):
+        self.level += 1
+        self.speed = self.speed - (self.speed * 0.1)
+        
+        
+def hadleEvents(screen, gb, event):
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT and gb.canMoveLeft():
+            gb.currentBlock.x -= 1
+        if event.key == pygame.K_RIGHT and gb.canMoveRight():
+            gb.currentBlock.x += 1
+        if event.key == pygame.K_DOWN and gb.canMoveDown():
+            gb.currentBlock.y += 1
+        if event.key == pygame.K_UP and gb.canRotate():
+            gb.currentBlock.rotate()
+        if event.key == pygame.K_SPACE and gb.canMoveDown():
+            while gb.canMoveDown():
+                gb.currentBlock.y += 1
+            gb.draw(screen)
+        if event.key == pygame.K_r:
+            gb.reset()
 
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((600, 600))
+    screen = pygame.display.set_mode((400, 400))
     pygame.display.set_caption('Tetris')
     clock = pygame.time.Clock()
-    gb = GameBoard(20, 30)
+    gb = GameBoard(10, 20)
     pygame.display.update()
     fall_timer = 0
     while True:
         fall_timer += clock.get_rawtime()
         clock.tick(500)
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT and gb.canMoveLeft():
-                    gb.currentBlock.x -= 1
-                if event.key == pygame.K_RIGHT and gb.canMoveRight():
-                    gb.currentBlock.x += 1
-                if event.key == pygame.K_DOWN and gb.canMoveDown():
-                    gb.currentBlock.y += 1
-                if event.key == pygame.K_UP and gb.canRotate():
-                    gb.currentBlock.rotate()
-                if event.key == pygame.K_SPACE and gb.canMoveDown():
-                    while gb.canMoveDown():
-                        gb.currentBlock.y += 1
-                    gb.draw(screen)
-                if event.key == pygame.K_r:
-                    gb.reset()
+            hadleEvents(screen, gb, event)
         if gb.canMoveDown():
             if fall_timer/1000 >= gb.speed:
                 gb.currentBlock.y += 1
