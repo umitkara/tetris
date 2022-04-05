@@ -51,6 +51,7 @@ class GameBoard:
         self.score = 0
         self.level = 1
         self.speed = 0.5
+        self.paused = False
         
     def randomBlock(self) -> Block:
         return Block(self.width//2, 0, random.choice(list(tetrominos.keys())))
@@ -176,6 +177,8 @@ class GameBoard:
         self.nextBlock = self.randomBlock()
         self.score = 0
         self.level = 1
+        self.speed = 0.5
+        self.paused = False
     
     def draw(self, screen: pygame.Surface):
         screen.fill((158, 173, 134))
@@ -203,6 +206,19 @@ class GameBoard:
         self.level += 1
         self.speed = self.speed - (self.speed * 0.1)
         
+    def resume(self):
+        self.paused = False
+    
+    def pause(self):
+        self.paused = True
+    
+    def drawPauseText(self, screen: pygame.Surface):
+        font = pygame.font.SysFont('Arial', 20)
+        text = font.render('PAUSED II', True, (0, 0, 0))
+        startY = 140
+        startX = (len(self.board[0]) + 3) * 20
+        screen.blit(text, (startX, startY))
+        
         
 def hadleEvents(screen, gb, event):
     if event.type == pygame.QUIT:
@@ -223,6 +239,11 @@ def hadleEvents(screen, gb, event):
             gb.draw(screen)
         if event.key == pygame.K_r:
             gb.reset()
+        if event.key == pygame.K_p:
+            if gb.paused:
+                gb.resume()
+            else:
+                gb.pause()
 
 
 def main():
@@ -238,6 +259,11 @@ def main():
         clock.tick(500)
         for event in pygame.event.get():
             hadleEvents(screen, gb, event)
+        if gb.paused:
+            gb.draw(screen)
+            gb.drawPauseText(screen)
+            pygame.display.update()
+            continue
         if gb.canMoveDown():
             if fall_timer/1000 >= gb.speed:
                 gb.currentBlock.y += 1
