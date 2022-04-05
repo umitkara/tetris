@@ -109,6 +109,38 @@ class GameBoard:
             self.board.insert(0, [0 for _ in range(self.width)])
             self.score += 10
             
+    def removeFullLinesAnimation(self, fullLines, screen: pygame.Surface):
+        s = pygame.Surface((18,18))
+        s1 = pygame.Surface((10,10))
+        s.fill((86,0,0))
+        s1.fill((86,0,0))
+        for i in fullLines:
+            for j in range(len(self.board[i])):
+                screen.blit(s, ((j*20)+1,(i*20)+1))
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
+                screen.blit(s1, ((j*20)+5,(i*20)+5))
+            pygame.display.update()
+            pygame.time.delay(150)
+        s.fill((0,0,0))
+        s1.fill((0,0,0))
+        for i in fullLines:
+            for j in range(len(self.board[i])):
+                screen.blit(s, ((j*20)+1,(i*20)+1))
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
+                screen.blit(s1, ((j*20)+5,(i*20)+5))
+            pygame.display.update()
+            pygame.time.delay(150)
+        s.fill((86,0,0))
+        s1.fill((86,0,0))
+        for i in fullLines:
+            for j in range(len(self.board[i])):
+                screen.blit(s, ((j*20)+1,(i*20)+1))
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
+                screen.blit(s1, ((j*20)+5,(i*20)+5))
+            pygame.display.update()
+            pygame.time.delay(150)
+        self.removeFullLines(fullLines)
+            
     def _drawNextBlockBg(self, screen: pygame.Surface):
         s = pygame.Surface((18,18))
         s1 = pygame.Surface((10,10))
@@ -176,7 +208,7 @@ def main():
     fall_timer = 0
     while True:
         fall_timer += clock.get_rawtime()
-        clock.tick()
+        clock.tick(500)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -193,6 +225,7 @@ def main():
                 if event.key == pygame.K_SPACE and gb.canMoveDown():
                     while gb.canMoveDown():
                         gb.currentBlock.y += 1
+                    gb.draw(screen)
                 if event.key == pygame.K_r:
                     gb.reset()
         if gb.canMoveDown():
@@ -201,7 +234,7 @@ def main():
                 fall_timer = 0
         else:
             gb.placeBlock()
-            gb.removeFullLines(gb.checkFullLine())
+            gb.removeFullLinesAnimation(gb.checkFullLine(), screen)
             gb.nextBlock.setPosition(gb.width//2, 0)
             gb.currentBlock = gb.nextBlock
             gb.nextBlock = gb.randomBlock()
