@@ -113,6 +113,8 @@ class GameBoard:
             self.levelUp()
             
     def removeFullLinesAnimation(self, fullLines, screen: pygame.Surface):
+        if not fullLines:
+            return
         s = pygame.Surface((18,18))
         s1 = pygame.Surface((10,10))
         s.fill((86,0,0))
@@ -123,7 +125,7 @@ class GameBoard:
                 pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
                 screen.blit(s1, ((j*20)+5,(i*20)+5))
             pygame.display.update()
-            pygame.time.delay(150)
+        pygame.time.delay(150)
         s.fill((0,0,0))
         s1.fill((0,0,0))
         for i in fullLines:
@@ -132,7 +134,7 @@ class GameBoard:
                 pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
                 screen.blit(s1, ((j*20)+5,(i*20)+5))
             pygame.display.update()
-            pygame.time.delay(150)
+        pygame.time.delay(150)
         s.fill((86,0,0))
         s1.fill((86,0,0))
         for i in fullLines:
@@ -141,7 +143,7 @@ class GameBoard:
                 pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
                 screen.blit(s1, ((j*20)+5,(i*20)+5))
             pygame.display.update()
-            pygame.time.delay(150)
+        pygame.time.delay(150)
         self.removeFullLines(fullLines)
             
     def _drawNextBlockBg(self, screen: pygame.Surface):
@@ -168,6 +170,10 @@ class GameBoard:
         font = pygame.font.SysFont('Arial', 20)
         text = font.render(f'Score: {str(self.score)}', True, (0, 0, 0))
         startY = 100
+        startX = (len(self.board[0]) + 3) * 20
+        screen.blit(text, (startX, startY))
+        text = font.render(f'Level: {str(self.level)}', True, (0, 0, 0))
+        startY = 140
         startX = (len(self.board[0]) + 3) * 20
         screen.blit(text, (startX, startY))
         
@@ -215,7 +221,7 @@ class GameBoard:
     def drawPauseText(self, screen: pygame.Surface):
         font = pygame.font.SysFont('Arial', 20)
         text = font.render('PAUSED II', True, (0, 0, 0))
-        startY = 140
+        startY = 180
         startX = (len(self.board[0]) + 3) * 20
         screen.blit(text, (startX, startY))
         
