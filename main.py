@@ -177,6 +177,30 @@ class GameBoard:
         startX = (len(self.board[0]) + 3) * 20
         screen.blit(text, (startX, startY))
         
+    def _resetAnimation(self, screen: pygame.Surface):
+        s = pygame.Surface((18,18))
+        s1 = pygame.Surface((10,10))
+        s.fill((0,0,0))
+        s1.fill((0,0,0))
+        for i in range(len(self.board)-1, -1, -1):
+            for j in range(len(self.board[i])):
+                screen.blit(s, ((j*20)+1,(i*20)+1))
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
+                screen.blit(s1, ((j*20)+5,(i*20)+5))
+            pygame.display.update()
+            pygame.time.delay(40)
+        s.set_alpha(70)
+        s1.set_alpha(70)
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20), (i*20), 20, 20))
+                screen.blit(s, ((j*20)+1,(i*20)+1))
+                pygame.draw.rect(screen, (158, 173, 134), ((j*20)+3, (i*20)+3, 14, 14))
+                screen.blit(s1, ((j*20)+5,(i*20)+5))
+            pygame.display.update()
+            pygame.time.delay(40)
+        pygame.time.delay(80)
+        
     def reset(self):
         self.board = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.currentBlock = self.randomBlock()
@@ -244,6 +268,7 @@ def hadleEvents(screen, gb, event):
                 gb.currentBlock.y += 1
             gb.draw(screen)
         if event.key == pygame.K_r:
+            gb._resetAnimation(screen)
             gb.reset()
         if event.key == pygame.K_p:
             if gb.paused:
